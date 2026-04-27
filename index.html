@@ -1,0 +1,169 @@
+Alpha Tech Innovations
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Smart AI Search Engine</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: linear-gradient(120deg,#04f7ee,#61c9e9);
+    text-align: center;
+    color: white;
+}
+
+.container {
+    margin-top: 80px;
+}
+
+input {
+    width: 320px;
+    padding: 12px;
+    border-radius: 25px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+button {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 25px;
+    background: orange;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#suggestions {
+    background: white;
+    color: black;
+    width: 320px;
+    margin: auto;
+    border-radius: 10px;
+    margin-top: 5px;
+    text-align: left;
+}
+
+#suggestions div {
+    padding: 8px;
+    cursor: pointer;
+}
+
+#suggestions div:hover {
+    background: #eee;
+}
+
+#results {
+    margin-top: 30px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+}
+
+.result-item {
+    background: white;
+    color: black;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <h1>🔍 Smart AI Search</h1>
+
+    <input type="text" id="searchBox" placeholder="Search anything..." onkeyup="suggestions()">
+    
+    <div id="suggestions"></div>
+
+    <br>
+    <button onclick="search()">Search</button>
+
+    <div id="results"></div>
+</div>
+
+<script>
+let data = [
+    "HTML tutorial",
+    "CSS design",
+    "JavaScript basics",
+    "AI tools",
+    "Machine learning",
+    "Earn money online",
+    "Web development",
+    "VS Code tips"
+];
+
+// 🔹 Suggestions
+function suggestions() {
+    let input = document.getElementById("searchBox").value.toLowerCase();
+    let suggestionBox = document.getElementById("suggestions");
+
+    suggestionBox.innerHTML = "";
+
+    if(input === "") return;
+
+    let filtered = data.filter(item => item.toLowerCase().includes(input));
+
+    filtered.forEach(item => {
+        let div = document.createElement("div");
+        div.innerHTML = item;
+
+        div.onclick = () => {
+            document.getElementById("searchBox").value = item;
+            suggestionBox.innerHTML = "";
+            search();
+        };
+
+        suggestionBox.appendChild(div);
+    });
+}
+
+// 🔹 Enter key search
+document.getElementById("searchBox").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        search();
+    }
+});
+
+// 🔹 LIVE SEARCH (Wikipedia API)
+function search() {
+    let query = document.getElementById("searchBox").value;
+    let results = document.getElementById("results");
+
+    if(query === "") return;
+
+    results.innerHTML = "<p>Loading...</p>";
+
+    fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${query}`)
+    .then(response => response.json())
+    .then(data => {
+        if(data.extract) {
+            results.innerHTML = `
+                <div class="result-item">
+                    <h2>${data.title}</h2>
+                    <p>${data.extract}</p>
+                    <a href="${data.content_urls.desktop.page}" target="_blank">Read more</a>
+                </div>
+            `;
+        } else {
+            results.innerHTML = "<p>No results found</p>";
+        }
+    })
+    .catch(() => {
+        results.innerHTML = "<p>Error fetching data</p>";
+    });
+}
+</script>
+
+</body>
+</html>
+
+
+Developer Name :- Alim Pathan
